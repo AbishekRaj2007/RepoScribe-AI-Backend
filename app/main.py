@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.github_service import fetch_repo_structure
 from app.services.ai_service import generate_readme
+from app.schemas import RepoRequest
+from app.services.github_service import fetch_repo_structure
+from app.services.ai_service import generate_readme
 
 
 app = FastAPI(title="Reposcribe API")
@@ -20,7 +23,8 @@ def check():
 
 
 @app.post("/generate-readme")
-def generate(repo_url: str):
+def generate(data: RepoRequest):
+    repo_url = data.repo_url
     owner, repo = repo_url.rstrip("/").split("/")[-2:]
     repo_data = fetch_repo_structure(owner, repo)
     readme = generate_readme(repo_data)
